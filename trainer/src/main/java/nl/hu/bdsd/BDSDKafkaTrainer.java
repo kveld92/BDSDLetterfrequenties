@@ -44,12 +44,12 @@ public class BDSDKafkaTrainer extends Thread{
       return "_" + s + "_";
   }
   private void initBigramMatrix(){
-    int[][] matrix = new int[size+1][size+1];
-    for(Map.Entry<String, HashSet<String>> fileMap : filenames.entrySet())
+    for(Map.Entry<String, HashSet<String>> fileMap : filenames.entrySet()){
+      int[][] matrix = new int[size+1][size+1];
       bigramMap.put(fileMap.getKey(), matrix);
+    }
   }
   private void updateBigramMatrix(String filename, String lang) throws IOException {
-      int[][] bigramMatrix  = new int[size+1][size+1];
       URL url = getClass().getResource(filename);
       File file = new File(url.getPath());
 
@@ -60,31 +60,27 @@ public class BDSDKafkaTrainer extends Thread{
                   for(String w : Arrays.asList(line.split("\\s|,|\\.|\\?|\\!|\\:|\\-|’|‘|\\(|\\)"))){
                     String word = w.toLowerCase();
                     if(word.matches("[a-z]+")){
-                      //## PER CHARACTER
                       String f_word = formatter(word);
-                      for(int i = 0; i < f_word.length()-1; ++i){
-                        int x = getCode(f_word.charAt(i));
-                        int y = getCode(f_word.charAt(i+1));
-                        ++bigramMatrix[x][y];
-                      }
+                      for(int i = 0; i < f_word.length()-1; ++i)
+                        ++bigramMap.get(lang)[getCode(f_word.charAt(i))][getCode(f_word.charAt(i+1))];
                     }
                   }
               }
           }
       }
-      bigramMap.put(lang, bigramMatrix);
   }
   private String stringifyBigramMatrix(String lang){
     String result = lang+",";
-    int[][] matrix = bigramMap.get(lang);
     for(int i = 0; i < size; ++i)
-      for(int j = 0; j < size; ++j)
-        result += (matrix[i][j] + (((i+1)*(j+1) < size*size-1) ? "," : ""));
+      for(int j = 0; j < size; ++j){
+        result += (bigramMap.get(lang)[i][j] + (((i+1)*(j+1) < size*size-1) ? "," : ""));
+      }
     return result;
   }
   private void send(){
     for(String lang : bigramMap.keySet()){
       String messageStr = stringifyBigramMatrix(lang);
+      System.out.println(messageStr);
       long startTime    = System.currentTimeMillis();
       if(isAsync) producer.send(new ProducerRecord<>(topic, messageNo, messageStr), new MyCallback(startTime, messageNo, messageStr));
       else{
@@ -102,19 +98,15 @@ public class BDSDKafkaTrainer extends Thread{
         System.out.println("\t-> "+lang);
         for(String file : fileMap.getValue()){
           System.out.println("\t\t"+"/" + fileMap.getKey() + "/" + file);
-
-          //updateBigramMatrix("/" + fileMap.getKey() + "/" + file, lang);
+          updateBigramMatrix("/" + fileMap.getKey() + "/" + file, lang);
         }
       }
-      //updateBigramMatrix("/nl/sentences.nl.txt", "nl");
-      updateBigramMatrix("/nl/sentences.nl.txt", "nl");
-
     }
     catch(IOException e){
       e.printStackTrace();
     }
     printInfo();
-    //send();
+    send();
     System.exit(0);
   }
   private void printInfo(){
