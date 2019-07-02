@@ -50,9 +50,8 @@ public class BDSDKafkaTrainer extends Thread{
     }
   }
   private void updateBigramMatrix(String filename, String lang) throws IOException {
-      URL url = getClass().getResource(filename);
-      File file = new File(url.getPath());
-
+      URL url     = getClass().getResource(filename);
+      File file   = new File(url.getPath());
       try (BufferedReader br = new BufferedReader(new FileReader(file))) {
           String line = "";
           while ((line = br.readLine()) != null) {
@@ -61,8 +60,9 @@ public class BDSDKafkaTrainer extends Thread{
                     String word = w.toLowerCase();
                     if(word.matches("[a-z]+")){
                       String f_word = formatter(word);
-                      for(int i = 0; i < f_word.length()-1; ++i)
+                      for(int i = 0; i < f_word.length()-1; ++i){
                         ++bigramMap.get(lang)[getCode(f_word.charAt(i))][getCode(f_word.charAt(i+1))];
+                      }
                     }
                   }
               }
@@ -72,9 +72,8 @@ public class BDSDKafkaTrainer extends Thread{
   private String stringifyBigramMatrix(String lang){
     String result = lang+",";
     for(int i = 0; i < size; ++i)
-      for(int j = 0; j < size; ++j){
+      for(int j = 0; j < size; ++j)
         result += (bigramMap.get(lang)[i][j] + (((i+1)*(j+1) < size*size-1) ? "," : ""));
-      }
     return result;
   }
   private void send(){
