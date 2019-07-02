@@ -1,7 +1,0 @@
-abcdefghijklmnopqrstuvwxyz
-a_
-b_
-c_
-_a
-_b
-_c
