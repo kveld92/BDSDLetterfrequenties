@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class BDSDKafkaTrainerRunner{
+  private static boolean test = false;
 
   private static HashSet<String> getFiles(String lang) {
     HashSet<String> filenames = new HashSet<>();
@@ -26,11 +27,15 @@ public class BDSDKafkaTrainerRunner{
     String path                                 = System.getProperty("user.dir")+"/target/classes/";
     File folder                                 = new File(path);
     File[] files                                = folder.listFiles();
+    String testDir                              = "test";
 
     for(int i = 0; i < files.length; ++i)
-      if(files[i].isDirectory())
-        fileMap.put(files[i].getName(), getFiles(files[i].getName()));
-
+      if(files[i].isDirectory()){
+        if(test) fileMap.put(testDir, getFiles(files[i].getName()));
+        else
+          if(!files[i].getName().equals("test"))
+            fileMap.put(files[i].getName(), getFiles(files[i].getName()));
+      }
     return fileMap;
   }
 
