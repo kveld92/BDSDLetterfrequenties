@@ -45,7 +45,7 @@ public class LanguageAnalyzer extends ShutdownableThread{
             probableLang = lang;
           }
         }
-        System.out.println("(" + probableLang.toUpperCase() + ")\t" + record.value());
+        System.out.println(record.key() + ".\t(" + probableLang.toUpperCase() + ")\t" + record.value());
       }
   }
 
