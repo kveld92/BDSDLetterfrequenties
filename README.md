@@ -9,7 +9,7 @@ De volgende code bouwt en voert de consumer uit.
 
 ## Voorbeeld-run:
 
-### info
+### Info
 ![Info](images/0.png?raw=true "Info")
 
 ### Matrices
