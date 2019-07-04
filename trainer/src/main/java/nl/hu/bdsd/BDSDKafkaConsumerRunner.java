@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-public class BDSDKafkaTrainerRunner{
-  private static boolean test = false;
+public class BDSDKafkaConsumerRunner{
+  private static boolean m_test     = false;
+  private static String m_testDir   = "test",
+                        m_topic     = "sentences";
 
   private static HashSet<String> getFiles(String lang) {
     HashSet<String> filenames = new HashSet<>();
@@ -27,21 +29,24 @@ public class BDSDKafkaTrainerRunner{
     String path                                 = System.getProperty("user.dir")+"/target/classes/";
     File folder                                 = new File(path);
     File[] files                                = folder.listFiles();
-    String testDir                              = "test";
 
     for(int i = 0; i < files.length; ++i)
       if(files[i].isDirectory()){
-        if(test) fileMap.put(testDir, getFiles(files[i].getName()));
+        if(m_test) fileMap.put(m_testDir, getFiles(files[i].getName()));
         else
-          if(!files[i].getName().equals("test"))
+          if(!files[i].getName().equals(m_testDir))
             fileMap.put(files[i].getName(), getFiles(files[i].getName()));
       }
     return fileMap;
   }
 
   public static void main(String[] args) {
-    BDSDKafkaTrainer producerThread = new BDSDKafkaTrainer("training", false, fileMap());
-    // start the producer
-    producerThread.start();
+    LanguageTrainer trainer     = new LanguageTrainer(fileMap());
+    LanguageAnalyzer analyzer   = new LanguageAnalyzer(m_topic, trainer.getBigramMatrixMap());
+    trainer.info();
+    analyzer.start();
+    System.out.println("\n####################\n#\tLISTENING\t #\n####################\n");
+    System.out.println("Listening for sentences on topic: " + m_topic);
+    System.out.println("----------------------------------------------------------------");
   }
 }
