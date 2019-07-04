@@ -9,7 +9,7 @@ public class BigramMatrix {
   *********/
     private String m_text             = "";
     private int m_size                = 27,
-                frequencyTotal      = 0;
+                frequencyTotal        = 0;
     private float[][] m_bigramMatrix  = new float[m_size+1][m_size+1];
 
     /**! a-z over 0 - 26; 27 is '_'(-2); everything else is 27; */
