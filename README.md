@@ -8,4 +8,20 @@ De volgende code bouwt en voert de consumer uit.
 `mvn package && mvn exec:java -Dexec.mainClass="nl.hu.bdsd.BDSDKafkaConsumerRunner"`
 
 ## Voorbeeld-run:
+
+### info
 ![Info](images/0.png?raw=true "Info")
+
+### Matrices
+![Matrices](images/1.png?raw=true "matrix")
+
+![Matrix EN & IT](images/2.png?raw=true "matrix1")
+
+![Matrices IT & NL](images/3.png?raw=true "matrix2")
+
+![Matrices ES](images/4.png?raw=true "matrix3")
+
+### Sentences
+![Sentences EN](images/5.png?raw=true "sentences1")
+
+![Sentences NL](images/6.png?raw=true "sentences2")
